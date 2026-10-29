@@ -1,0 +1,6 @@
+---
+- name: Baseline hardening for lab VMs
+  hosts: lab_vms
+  become: true
+  roles:
+    - baseline_hardening

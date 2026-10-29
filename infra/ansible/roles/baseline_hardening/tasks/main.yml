@@ -1,0 +1,116 @@
+---
+- name: Install baseline packages
+  ansible.builtin.apt:
+    name: [ufw, fail2ban, python3-systemd, chrony, unattended-upgrades, auditd]
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  tags: [packages]
+
+# ---- SSH Hardening ----
+- name: SSH hardening drop-in
+  ansible.builtin.copy:
+    dest: /etc/ssh/sshd_config.d/00-hardening.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      PermitRootLogin no
+      PasswordAuthentication no
+      KbdInteractiveAuthentication no
+      PubkeyAuthentication yes
+      X11Forwarding no
+      MaxAuthTries 3
+      LoginGraceTime 30
+      ClientAliveInterval 300
+      ClientAliveCountMax 2
+      AllowUsers {{ ssh_allowed_users | join(' ') }}
+  notify: Restart ssh
+  tags: [ssh]
+
+- name: Validate sshd configuration
+  ansible.builtin.command: /usr/sbin/sshd -t
+  changed_when: false
+  tags: [ssh]
+
+# ---- Firewall (UFW) ----
+- name: Allow SSH from management sources
+  community.general.ufw:
+    rule: allow
+    port: "{{ ssh_port }}"
+    proto: tcp
+    src: "{{ item }}"
+  loop: "{{ allowed_ssh_sources }}"
+  tags: [firewall]
+
+- name: Default deny incoming
+  community.general.ufw: { direction: incoming, policy: deny }
+  tags: [firewall]
+
+- name: Default allow outgoing
+  community.general.ufw: { direction: outgoing, policy: allow }
+  tags: [firewall]
+
+- name: Enable ufw
+  community.general.ufw: { state: enabled }
+  tags: [firewall]
+
+# ---- Tự động cập nhật bảo mật ----
+- name: Enable unattended security upgrades
+  ansible.builtin.copy:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    mode: "0644"
+    content: |
+      APT::Periodic::Update-Package-Lists "1";
+      APT::Periodic::Unattended-Upgrade "1";
+  tags: [updates]
+
+# ---- Fail2ban ----
+- name: fail2ban sshd jail
+  ansible.builtin.copy:
+    dest: /etc/fail2ban/jail.d/sshd.local
+    mode: "0644"
+    content: |
+      [sshd]
+      enabled = true
+      backend = systemd
+      filter = sshd[mode=aggressive]
+      maxretry = 4
+      findtime = 10m
+      bantime = 1h
+      ignoreip = {{ fail2ban_ignoreip }}
+  notify: Restart fail2ban
+  tags: [fail2ban]
+
+- name: Enable fail2ban
+  ansible.builtin.service: { name: fail2ban, state: started, enabled: true }
+  tags: [fail2ban]
+
+# ---- Đồng bộ thời gian (Chrony) & Timezone ----
+- name: Set timezone
+  community.general.timezone: { name: "{{ timezone }}" }
+  tags: [time]
+
+- name: Enable chrony
+  ansible.builtin.service: { name: chrony, state: started, enabled: true }
+  tags: [time]
+
+# ---- Auditd (Giám sát hệ thống) ----
+- name: Audit rules
+  ansible.builtin.copy:
+    dest: /etc/audit/rules.d/hardening.rules
+    mode: "0640"
+    content: |
+      -w /etc/ssh/sshd_config -p wa -k sshd_config
+      -w /etc/ssh/sshd_config.d/ -p wa -k sshd_config
+      -w /etc/sudoers -p wa -k sudoers
+      -w /etc/sudoers.d/ -p wa -k sudoers
+      -w /etc/passwd -p wa -k identity
+      -w /etc/shadow -p wa -k identity
+      -w /etc/group -p wa -k identity
+  notify: Load audit rules
+  tags: [audit]
+
+- name: Enable auditd
+  ansible.builtin.service: { name: auditd, state: started, enabled: true }
+  tags: [audit]
