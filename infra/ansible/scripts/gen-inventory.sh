@@ -8,5 +8,5 @@ cd "$(dirname "$0")/../../terraform"
   echo
   echo "[lab_vms:vars]"
   echo "ansible_user=ops"
-  echo "ansible_ssh_private_key_file=~/.ssh/lab_ed25519"
+  echo "ansible_ssh_private_key_file=~/.ssh/lab__ed25519"
 } > ../ansible/inventory/hosts.ini
