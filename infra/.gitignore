@@ -2,3 +2,4 @@
 *.tfstate*
 crash.log
 proxmox.env
+infra/ansible/inventory/
