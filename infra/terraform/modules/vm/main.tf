@@ -1,22 +1,63 @@
-variable "pm_endpoint" {
-  type    = string
-  default = "https://192.168.42.11:8006"
+terraform {
+  required_providers {
+    proxmox = { source = "bpg/proxmox" }
+  }
 }
-variable "template_id"         { type = number  default = 9000 }
-variable "gateway"             { type = string  default = "10.10.20.1" }
-variable "username"            { type = string  default = "ops" }
-variable "ssh_public_key_path" { type = string  default = "~/.ssh/lab_ed25519.pub" }
-variable "ha_group"            { type = string  default = null }
 
-variable "vms" {
-  type = map(object({
-    vm_id   = number
-    node    = string
-    ip      = string
-    vlan_id = optional(number, 20)
-    cores   = optional(number, 1)
-    memory  = optional(number, 384)
-    disk_gb = optional(number, 5)
-    ha      = optional(bool, true)
-  }))
+resource "proxmox_virtual_environment_vm" "this" {
+  name      = var.name
+  node_name = var.node_name
+  vm_id     = var.vm_id
+  tags      = ["terraform", "lab"]
+  on_boot   = true
+
+  clone {
+    vm_id = var.template_id
+    full  = true
+  }
+
+  agent {
+    enabled = true
+    timeout = "5m"
+  }
+
+  cpu {
+    cores = var.cores
+    type  = "x86-64-v2-AES"
+  }
+
+  memory {
+    dedicated = var.memory
+  }
+
+  disk {
+    datastore_id = "tank"
+    interface    = "scsi0"
+    size         = var.disk_gb
+    discard      = "on"
+  }
+
+  network_device {
+    bridge  = "vmbr1"
+    vlan_id = var.vlan_id
+  }
+
+  initialization {
+    datastore_id = "tank"
+    ip_config {
+      ipv4 {
+        address = "${var.ip}/24"
+        gateway = var.gateway
+      }
+    }
+    dns {
+      servers = var.dns
+    }
+    user_account {
+      username = var.username
+      keys     = [var.ssh_public_key]
+    }
+  }
 }
+
+output "vm_id" { value = proxmox_virtual_environment_vm.this.vm_id }
