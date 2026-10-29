@@ -10,4 +10,7 @@ variable "memory"         { type = number }
 variable "disk_gb"        { type = number }
 variable "username"       { type = string }
 variable "ssh_public_key" { type = string }
-variable "dns"            { type = list(string) default = ["192.168.42.2"] }
+variable "dns" {
+  type    = list(string)
+  default = ["192.168.42.2"]
+}
