@@ -38,7 +38,7 @@ resource "terraform_data" "replication" {
 }
 
 # Kích hoạt tính năng HA cho các máy ảo được chỉ định
-resource "proxmox_virtual_environment_haresource" "vm" {
+resource "proxmox_haresource" "vm" {
   for_each     = { for k, v in var.vms : k => v if v.ha }
   resource_id  = "vm:${each.value.vm_id}"
   state        = "started"
