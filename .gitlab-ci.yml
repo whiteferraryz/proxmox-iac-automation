@@ -1,0 +1,75 @@
+stages: [validate, plan, apply, configure]
+
+default:
+  tags: [lab]
+
+variables:
+  TF_ROOT: terraform
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/lab
+  TF_VAR_ssh_public_key_path: /home/gitlab-runner/.ssh/lab_ed25519.pub
+  PROXMOX_VE_ENDPOINT: "https://192.168.42.11:8006/"
+  PROXMOX_VE_INSECURE: "true"
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+.terraform:
+  before_script:
+    - export PROXMOX_VE_API_TOKEN="terraform@pve!tf=${PM_TOKEN_SECRET}"
+    - cd ${TF_ROOT}
+    - >
+      terraform init -input=false
+      -backend-config="address=${TF_ADDRESS}"
+      -backend-config="lock_address=${TF_ADDRESS}/lock"
+      -backend-config="unlock_address=${TF_ADDRESS}/lock"
+      -backend-config="lock_method=POST"
+      -backend-config="unlock_method=DELETE"
+      -backend-config="retry_wait_min=5"
+      -backend-config="username=gitlab-ci-token"
+      -backend-config="password=${CI_JOB_TOKEN}"
+
+validate:
+  stage: validate
+  script:
+    - cd terraform
+    - terraform fmt -check -recursive
+    - terraform init -backend=false -input=false
+    - terraform validate
+    - cd ../ansible
+    - yamllint .
+    - ansible-lint site.yml
+
+plan:
+  stage: plan
+  extends: .terraform
+  script:
+    - terraform plan -input=false -out=tfplan
+    - terraform show -no-color tfplan > plan.txt
+  artifacts:
+    paths: [terraform/tfplan, terraform/plan.txt]
+    expire_in: 1 day
+
+apply:
+  stage: apply
+  extends: .terraform
+  needs: [plan]
+  script:
+    - terraform apply -input=false tfplan
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+  environment:
+    name: lab
+
+configure:
+  stage: configure
+  extends: .terraform
+  needs: [apply]
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - ../ansible/scripts/gen-inventory.sh
+    - cd ../ansible
+    - ansible-playbook site.yml
