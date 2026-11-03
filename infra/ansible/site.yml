@@ -2,5 +2,12 @@
 - name: Baseline hardening for lab VMs
   hosts: lab_vms
   become: true
+  pre_tasks:
+    - name: Wait for SSH
+      ansible.builtin.wait_for_connection:
+        timeout: 300
+    - name: Wait for cloud-init to finish
+      ansible.builtin.command: cloud-init status --wait
+      changed_when: false
   roles:
     - baseline_hardening
