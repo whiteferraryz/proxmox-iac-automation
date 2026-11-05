@@ -10,6 +10,7 @@ resource "proxmox_virtual_environment_vm" "this" {
   vm_id     = var.vm_id
   tags      = ["terraform", "lab"]
   on_boot   = true
+  os_type = "cloud-init"
 
   clone {
     vm_id = var.template_id
