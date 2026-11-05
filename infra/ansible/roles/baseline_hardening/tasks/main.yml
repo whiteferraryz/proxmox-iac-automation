@@ -87,8 +87,8 @@
   tags: [fail2ban]
 
 # ---- Đồng bộ thời gian (Chrony) & Timezone ----
-- name: Set timezone
-  community.general.timezone: {name: "{{ timezone }}"}
+- name: Set baseline_hardening_timezone
+  community.general.baseline_hardening_timezone: {name: "{{ baseline_hardening_timezone }}"}
   tags: [time]
 
 - name: Enable chrony

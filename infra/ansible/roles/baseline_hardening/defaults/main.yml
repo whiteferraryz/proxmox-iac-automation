@@ -3,4 +3,4 @@ ssh_port: 22
 ssh_allowed_users: [ops]
 allowed_ssh_sources: ["10.10.20.0/24"]
 fail2ban_ignoreip: "127.0.0.1/8 10.10.20.1"
-timezone: Asia/Ho_Chi_Minh
+baseline_hardening_timezone: Asia/Ho_Chi_Minh
