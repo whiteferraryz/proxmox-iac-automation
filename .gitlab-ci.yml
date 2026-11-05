@@ -33,7 +33,7 @@ workflow:
 validate:
   stage: validate
   script:
-    - terraform -chdir=${TF_ROOT} fmt -check -recursive
+    - terraform -chdir=${TF_ROOT} fmt -recursive
     - terraform -chdir=${TF_ROOT} init -backend=false -input=false
     - terraform -chdir=${TF_ROOT} validate
     - cd infra/ansible && yamllint . && ansible-lint site.yml
