@@ -7,4 +7,3 @@
 
 - name: Load audit rules
   ansible.builtin.command: augenrules --load
-  
