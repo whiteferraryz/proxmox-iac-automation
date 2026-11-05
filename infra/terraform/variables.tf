@@ -19,8 +19,7 @@ variable "username" {
 }
 
 variable "ssh_public_key_path" {
-  type    = string
-  default = "~/.ssh/lab__ed25519.pub"
+  default = "./keys/lab__ed25519.pub"
 }
 
 variable "ha_group" {
