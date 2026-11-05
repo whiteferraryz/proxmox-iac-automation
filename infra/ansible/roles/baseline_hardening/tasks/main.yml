@@ -24,7 +24,7 @@
       LoginGraceTime 30
       ClientAliveInterval 300
       ClientAliveCountMax 2
-      AllowUsers {{ ssh_allowed_users | join(' ') }}
+      AllowUsers {{ssh_allowed_users | join(' ')}}
   notify: Restart ssh
   tags: [ssh]
 
@@ -37,22 +37,22 @@
 - name: Allow SSH from management sources
   community.general.ufw:
     rule: allow
-    port: "{{ ssh_port }}"
+    port: "{{ssh_port}}"
     proto: tcp
-    src: "{{ item }}"
-  loop: "{{ allowed_ssh_sources }}"
+    src: "{{item}}"
+  loop: "{{allowed_ssh_sources}}"
   tags: [firewall]
 
 - name: Default deny incoming
-  community.general.ufw: { direction: incoming, policy: deny }
+  community.general.ufw: {direction: incoming, policy: deny}
   tags: [firewall]
 
 - name: Default allow outgoing
-  community.general.ufw: { direction: outgoing, policy: allow }
+  community.general.ufw: {direction: outgoing, policy: allow}
   tags: [firewall]
 
 - name: Enable ufw
-  community.general.ufw: { state: enabled }
+  community.general.ufw: {state: enabled}
   tags: [firewall]
 
 # ---- Tự động cập nhật bảo mật ----
@@ -78,21 +78,21 @@
       maxretry = 4
       findtime = 10m
       bantime = 1h
-      ignoreip = {{ fail2ban_ignoreip }}
+      ignoreip = {{fail2ban_ignoreip}}
   notify: Restart fail2ban
   tags: [fail2ban]
 
 - name: Enable fail2ban
-  ansible.builtin.service: { name: fail2ban, state: started, enabled: true }
+  ansible.builtin.service: {name: fail2ban, state: started, enabled: true}
   tags: [fail2ban]
 
 # ---- Đồng bộ thời gian (Chrony) & Timezone ----
 - name: Set timezone
-  community.general.timezone: { name: "{{ timezone }}" }
+  community.general.timezone: {name: "{{timezone}}" }
   tags: [time]
 
 - name: Enable chrony
-  ansible.builtin.service: { name: chrony, state: started, enabled: true }
+  ansible.builtin.service: {name: chrony, state: started, enabled: true}
   tags: [time]
 
 # ---- Auditd (Giám sát hệ thống) ----
