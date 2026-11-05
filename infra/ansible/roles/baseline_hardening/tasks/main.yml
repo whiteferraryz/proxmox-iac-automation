@@ -88,7 +88,7 @@
 
 # ---- Đồng bộ thời gian (Chrony) & Timezone ----
 - name: Set timezone
-  community.general.timezone: {name: "{{timezone}}" }
+  community.general.timezone: {name: "{{timezone}}"}
   tags: [time]
 
 - name: Enable chrony
