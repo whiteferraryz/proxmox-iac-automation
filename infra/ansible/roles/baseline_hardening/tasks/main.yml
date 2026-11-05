@@ -112,6 +112,5 @@
   tags: [audit]
 
 - name: Enable auditd
-  ansible.builtin.service: { name: auditd, state: started, enabled: true }
+  ansible.builtin.service: {name: auditd, state: started, enabled: true}
   tags: [audit]
-  
