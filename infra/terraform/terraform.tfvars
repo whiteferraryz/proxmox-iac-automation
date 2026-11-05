@@ -1,4 +1,4 @@
-ssh_public_key_path = "/root/.ssh/lab__ed25519.pub"
+ssh_public_key_path = "../keys/lab__ed25519.pub"
 vms = {
   web01 = {
     vm_id = 110,
