@@ -5,5 +5,6 @@
 - name: Restart Fail2ban
   ansible.builtin.service: {name: Fail2ban, state: restarted}
 
-- name: Load Audit Rules
+- name: Load audit rules
   ansible.builtin.command: augenrules --load
+  changed_when: false
