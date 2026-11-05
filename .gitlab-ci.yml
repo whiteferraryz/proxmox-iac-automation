@@ -4,7 +4,8 @@ default:
   tags: [lab]
 
 variables:
-  TF_ROOT: terraform
+  # Sửa lại TF_ROOT trỏ đúng vào thư mục infra/terraform
+  TF_ROOT: infra/terraform
   TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/lab
   TF_VAR_ssh_public_key_path: /home/gitlab-runner/.ssh/lab_ed25519.pub
   PROXMOX_VE_ENDPOINT: "https://192.168.42.11:8006/"
@@ -18,37 +19,33 @@ workflow:
 .terraform:
   before_script:
     - export PROXMOX_VE_API_TOKEN="terraform@pve!tf=${PM_TOKEN_SECRET}"
-    - cd ${TF_ROOT}
-    - >
-      terraform init -input=false
-      -backend-config="address=${TF_ADDRESS}"
-      -backend-config="lock_address=${TF_ADDRESS}/lock"
-      -backend-config="unlock_address=${TF_ADDRESS}/lock"
-      -backend-config="lock_method=POST"
-      -backend-config="unlock_method=DELETE"
-      -backend-config="retry_wait_min=5"
-      -backend-config="username=gitlab-ci-token"
-      -backend-config="password=${CI_JOB_TOKEN}"
+    # Xoá lệnh cd thủ công ở đây vì terraform init sẽ dùng -chdir hoặc chạy đúng thư mục TF_ROOT
+    - terraform -chdir=${TF_ROOT} init -input=false
+        -backend-config="address=${TF_ADDRESS}"
+        -backend-config="lock_address=${TF_ADDRESS}/lock"
+        -backend-config="unlock_address=${TF_ADDRESS}/lock"
+        -backend-config="lock_method=POST"
+        -backend-config="unlock_method=DELETE"
+        -backend-config="retry_wait_min=5"
+        -backend-config="username=gitlab-ci-token"
+        -backend-config="password=${CI_JOB_TOKEN}"
 
 validate:
   stage: validate
   script:
-    - cd terraform
-    - terraform fmt -check -recursive
-    - terraform init -backend=false -input=false
-    - terraform validate
-    - cd ../ansible
-    - yamllint .
-    - ansible-lint site.yml
+    - terraform -chdir=${TF_ROOT} fmt -check -recursive
+    - terraform -chdir=${TF_ROOT} init -backend=false -input=false
+    - terraform -chdir=${TF_ROOT} validate
+    - cd infra/ansible && yamllint . && ansible-lint site.yml
 
 plan:
   stage: plan
   extends: .terraform
   script:
-    - terraform plan -input=false -out=tfplan
-    - terraform show -no-color tfplan > plan.txt
+    - terraform -chdir=${TF_ROOT} plan -input=false -out=tfplan
+    - terraform -chdir=${TF_ROOT} show -no-color tfplan > ${TF_ROOT}/plan.txt
   artifacts:
-    paths: [terraform/tfplan, terraform/plan.txt]
+    paths: [infra/terraform/tfplan, infra/terraform/plan.txt]
     expire_in: 1 day
 
 apply:
@@ -56,7 +53,7 @@ apply:
   extends: .terraform
   needs: [plan]
   script:
-    - terraform apply -input=false tfplan
+    - terraform -chdir=${TF_ROOT} apply -input=false tfplan
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
@@ -70,6 +67,6 @@ configure:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
-    - ../ansible/scripts/gen-inventory.sh
-    - cd ../ansible
+    - cd infra/ansible
+    - ./scripts/gen-inventory.sh
     - ansible-playbook site.yml
