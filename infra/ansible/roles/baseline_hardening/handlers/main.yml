@@ -2,7 +2,7 @@
 - name: Restart ssh
   ansible.builtin.service: {name: ssh, state: restarted}
 
-- name: Restart Fail2ban
+- name: Restart fail2ban
   ansible.builtin.service: {name: fail2ban, state: restarted}
 
 - name: Load audit rules
