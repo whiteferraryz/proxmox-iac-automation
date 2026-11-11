@@ -9,7 +9,6 @@ terraform {
 }
 
 provider "proxmox" {
-  endpoint  = "https://192.168.42.11:8006/api2/json"
-  api_token = "root@pam!terraform=${var.proxmox_api_token}" # Đảm bảo có dấu bằng (=)
-  insecure  = true
+  endpoint = "https://192.168.42.11:8006/api2/json"
+  insecure = true
 }
