@@ -40,7 +40,7 @@ validate:
 before_script:
 - |
     # Sử dụng đúng biến token đã được export chuẩn ở trên
-    export PROXMOX_VE_API_TOKEN="root@pam!terraform=${PM_TOKEN_SECRET}"
+    export PROXMOX_VE_API_TOKEN="terraform@pve!tf2=${PM_TOKEN_SECRET}"
     
     # Gọi curl trực tiếp từ thư mục gốc của project (không cần cd infra/terraform nữa)
     HTTP_CODE=$(curl -sk -o /dev/null -w "%{http_code}" -H "Authorization: PVEAPIToken=$PROXMOX_VE_API_TOKEN" https://192.168.42.11:8006/api2/json/nodes/pve1/qemu/110/status/current)
