@@ -8,4 +8,8 @@ terraform {
   }
 }
 
-provider "proxmox" {} # endpoint, token, insecure lấy từ PROXMOX_VE_*
+provider "proxmox" {provider "proxmox" {
+  endpoint  = "https://192.168.42.11:8006/api2/json"
+  api_token = "root@pam!terraform=${var.proxmox_api_token}" # Hoặc lấy trực tiếp từ biến môi trường
+  insecure  = true
+}} # endpoint, token, insecure lấy từ PROXMOX_VE_*
