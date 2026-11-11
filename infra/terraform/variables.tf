@@ -27,6 +27,12 @@ variable "ha_group" {
   default = null
 }
 
+variable "proxmox_api_token" {
+  type      = string
+  sensitive = true
+  default   = ""
+}
+
 variable "vms" {
   type = map(object({
     vm_id   = number
