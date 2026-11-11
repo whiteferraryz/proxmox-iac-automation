@@ -33,7 +33,6 @@ workflow:
 validate:
   stage: validate
   script:
-  - cd infra/terraform
   - terraform fmt -recursive
   - terraform init
   - terraform validate
