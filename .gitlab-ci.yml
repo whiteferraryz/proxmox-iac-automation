@@ -18,7 +18,7 @@ workflow:
 
 .terraform:
   before_script:
-    - export PROXMOX_VE_API_TOKEN="root@pam!terraform=${PM_TOKEN_SECRET}"
+    - export PROXMOX_VE_API_TOKEN="terraform@pve!tf2=${PM_TOKEN_SECRET}"
     # Xoá lệnh cd thủ công ở đây vì terraform init sẽ dùng -chdir hoặc chạy đúng thư mục TF_ROOT
     - terraform -chdir=${TF_ROOT} init -input=false
         -backend-config="address=${TF_ADDRESS}"
