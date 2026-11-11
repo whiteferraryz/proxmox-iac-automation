@@ -19,6 +19,7 @@ workflow:
 .terraform:
   before_script:
     - export PROXMOX_VE_API_TOKEN="terraform@pve!tf2=${PM_TOKEN_SECRET}"
+    - export TF_HTTP_USERNAME="gitlab-ci-token"   # <-- Thêm dòng này vào
     - export TF_HTTP_PASSWORD="${CI_JOB_TOKEN}"
     - terraform -chdir=${TF_ROOT} init -input=false
         -backend-config="address=${TF_ADDRESS}"
@@ -29,7 +30,7 @@ workflow:
         -backend-config="retry_wait_min=5"
         -backend-config="username=gitlab-ci-token"
         -backend-config="password=${CI_JOB_TOKEN}"
-
+        
 validate:
   stage: validate
   extends: .terraform
