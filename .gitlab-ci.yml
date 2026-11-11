@@ -38,6 +38,18 @@ validate:
     - terraform -chdir=${TF_ROOT} validate
     - cd infra/ansible && yamllint . && ansible-lint site.yml
 
+before_script:
+  - cd infra/terraform
+  # Kiểm tra xem VM ID 110 đã tồn tại trên Proxmox chưa (thông qua API Proxmox)
+  # Nếu tồn tại mà chưa có trong terraform state thì tự động import
+  - |
+    export PROXMOX_VE_API_TOKEN="terraform=..." # Token của bạn
+    # Dùng curl gọi API Proxmox check qemu/110
+    HTTP_CODE=$(curl -sk -o /dev/null -w "%{http_code}" -H "Authorization: PVEAPIToken=$PROXMOX_VE_API_TOKEN" https://192.168.42.11:8006/api2/json/nodes/pve1/qemu/110/status/current)
+    if [ "$HTTP_CODE" -eq 200 ]; then
+      echo "VM 110 đã tồn tại trên Proxmox, tiến hành import vào state..."
+      terraform import 'module.vm["web01"].proxmox_virtual_environment_vm.this' 110 || true
+    fi
 plan:
   stage: plan
   extends: .terraform
