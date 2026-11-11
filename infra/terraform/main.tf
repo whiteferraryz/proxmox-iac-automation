@@ -13,7 +13,7 @@ module "vm" {
   memory         = each.value.memory
   disk_gb        = each.value.disk_gb
   username       = var.username
-  ssh_public_key = trimspace(file(var.ssh_public_key_path))
+  ssh_public_key = trimspace(file("${path.module}/../keys/lab__ed25519.pub"))
 }
 
 # Tạo Replication job thông qua Proxmox API trực tiếp bằng token của Terraform
