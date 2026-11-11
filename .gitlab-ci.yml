@@ -30,7 +30,7 @@ workflow:
         -backend-config="retry_wait_min=5"
         -backend-config="username=gitlab-ci-token"
         -backend-config="password=${CI_JOB_TOKEN}"
-        
+
 validate:
   stage: validate
   extends: .terraform
@@ -65,7 +65,10 @@ apply:
   extends: .terraform
   needs: [plan]
   script:
-    - terraform -chdir=${TF_ROOT} apply -input=false tfplan
+    # Truyền trực tiếp thông tin xác thực thông qua biến môi trường toàn cục cho terraform apply
+    - export TF_HTTP_USERNAME="gitlab-ci-token"
+    - export TF_HTTP_PASSWORD="${CI_JOB_TOKEN}"
+    - terraform -chdir=${TF_ROOT} apply -input=false -auto-approve
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
