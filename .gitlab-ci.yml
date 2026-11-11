@@ -32,10 +32,10 @@ workflow:
 
 validate:
   stage: validate
+  extends: .terraform
   script:
-  - terraform fmt -recursive
-  - terraform init
-  - terraform validate
+    - terraform -chdir=${TF_ROOT} fmt -recursive
+    - terraform -chdir=${TF_ROOT} validate
 
 before_script:
 - |
