@@ -24,7 +24,7 @@
       LoginGraceTime 30
       ClientAliveInterval 300
       ClientAliveCountMax 2
-      AllowUsers {{ ssh_allowed_users | join(' ') }}
+      AllowUsers {{ baseline_hardening_ssh_allowed_users | join(' ') }}
   notify: Restart ssh
   tags: [ssh]
 
@@ -37,10 +37,10 @@
 - name: Allow SSH from management sources
   community.general.ufw:
     rule: allow
-    port: "{{ ssh_port }}"
+    port: "{{ baseline_hardening_ssh_port }}"
     proto: tcp
     src: "{{ item }}"
-  loop: "{{ allowed_ssh_sources }}"
+  loop: "{{ baseline_hardening_allowed_ssh_sources }}"
   tags: [firewall]
 
 - name: Default deny incoming
