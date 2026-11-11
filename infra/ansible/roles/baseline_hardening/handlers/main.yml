@@ -1,9 +1,9 @@
 ---
-- name: Restart Ssh
-  ansible.builtin.service: {name: Ssh, state: restarted}
+- name: Restart ssh
+  ansible.builtin.service: {name: ssh, state: restarted}
 
 - name: Restart Fail2ban
-  ansible.builtin.service: {name: Fail2ban, state: restarted}
+  ansible.builtin.service: {name: fail2ban, state: restarted}
 
 - name: Load audit rules
   ansible.builtin.command: augenrules --load
