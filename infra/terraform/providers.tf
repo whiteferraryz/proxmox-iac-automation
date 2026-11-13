@@ -3,7 +3,6 @@ terraform {
   required_providers {
     proxmox = {
       source = "bpg/proxmox"
-      # ghim phiên bản hiện hành (xem registry.terraform.io/providers/bpg/proxmox), ví dụ "~> 0.x"
     }
   }
 }

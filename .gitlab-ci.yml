@@ -4,7 +4,6 @@ default:
   tags: [lab]
 
 variables:
-  # Sửa lại TF_ROOT trỏ đúng vào thư mục infra/terraform
   TF_ROOT: infra/terraform
   TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/lab
   TF_VAR_ssh_public_key_path: /home/gitlab-runner/.ssh/lab__ed25519.pub
@@ -19,7 +18,7 @@ workflow:
 .terraform:
   before_script:
     - export PROXMOX_VE_API_TOKEN="terraform@pve!tf2=${PM_TOKEN_SECRET}"
-    - export TF_HTTP_USERNAME="gitlab-ci-token"   # <-- Thêm dòng này vào
+    - export TF_HTTP_USERNAME="gitlab-ci-token"
     - export TF_HTTP_PASSWORD="${CI_JOB_TOKEN}"
     - terraform -chdir=${TF_ROOT} init -input=false
         -backend-config="address=${TF_ADDRESS}"
@@ -65,7 +64,6 @@ apply:
   extends: .terraform
   needs: [plan]
   script:
-    # Truyền trực tiếp thông tin xác thực thông qua biến môi trường toàn cục cho terraform apply
     - export TF_HTTP_USERNAME="gitlab-ci-token"
     - export TF_HTTP_PASSWORD="${CI_JOB_TOKEN}"
     - terraform -chdir=${TF_ROOT} apply -input=false -auto-approve

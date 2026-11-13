@@ -16,7 +16,6 @@ module "vm" {
   ssh_public_key = trimspace(file("${path.module}/../keys/lab__ed25519.pub"))
 }
 
-# Tạo Replication job thông qua Proxmox API trực tiếp bằng token của Terraform
 resource "terraform_data" "replication" {
   for_each = var.vms
   input = {
@@ -37,7 +36,6 @@ resource "terraform_data" "replication" {
   depends_on = [module.vm]
 }
 
-# Kích hoạt tính năng HA cho các máy ảo được chỉ định
 resource "proxmox_haresource" "vm" {
   for_each     = { for k, v in var.vms : k => v if v.ha }
   resource_id  = "vm:${each.value.vm_id}"
