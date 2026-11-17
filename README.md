@@ -5,10 +5,14 @@
 - Người thực hiện:Nguyễn Vĩnh Thắng
 - Thời gian: 4 tuần (24 ngày làm việc)
 <<<<<<< HEAD
+<<<<<<< HEAD
 - Phiên bản lab: Proxmox VE 9.2.2 (Debian 13)
 =======
 - Phiên bản lab: Proxmox VE 9.2.x (Debian 13)
 >>>>>>> 39bc3d3 (Edit README.md)
+=======
+- Phiên bản lab: Proxmox VE 9.2.2 (Debian 13)
+>>>>>>> 111adbf88f65cb7cb4b4eff7b864e6c9c814aef1
 
 > Lab chạy trên máy cá nhân (khoảng 6GB RAM, 100GB ổ đĩa) bằng VMware Workstation. Số liệu hiệu năng trên nested chỉ có giá trị **so sánh tương đối**, không đại diện phần cứng thật.
 
@@ -43,10 +47,14 @@ Mục tiêu của dự án là xây dựng và chuyển đổi hạ tầng từ 
 
 ```
 <<<<<<< HEAD
+<<<<<<< HEAD
 .
 =======
 
 >>>>>>> 39bc3d3 (Edit README.md)
+=======
+
+>>>>>>> 111adbf88f65cb7cb4b4eff7b864e6c9c814aef1
 ├── .gitlab-ci.yml                 # Pipeline validate, plan, apply thủ công và configure
 ├── README.md
 ├── docs/                          # Tài liệu dự án
@@ -155,7 +163,11 @@ Không commit: token Proxmox, `*.env`, khoá SSH, `terraform.tfstate`, `pve.yml`
 - Provider Terraform `bpg/proxmox` (registry.terraform.io/providers/bpg/proxmox)
 - Tài liệu Ansible, GitLab CI/CD và Terraform state do GitLab quản lý
 <<<<<<< HEAD
+<<<<<<< HEAD
 - Trang giá và tài liệu licensing: proxmox.com, Broadcom/VMware (xem nguồn và ngày tra trong `docs/06-evaluation/tco.md`)
 =======
 - Trang giá và tài liệu licensing: proxmox.com, Broadcom/VMware (xem nguồn và ngày tra trong `docs/06-evaluation/tco.md`).
 >>>>>>> 39bc3d3 (Edit README.md)
+=======
+- Trang giá và tài liệu licensing: proxmox.com, Broadcom/VMware (xem nguồn và ngày tra trong `docs/06-evaluation/tco.md`).
+>>>>>>> 111adbf88f65cb7cb4b4eff7b864e6c9c814aef1
