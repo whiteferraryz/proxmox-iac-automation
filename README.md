@@ -149,7 +149,3 @@ Không commit: token Proxmox, `*.env`, khoá SSH, `terraform.tfstate`, `pve.yml`
 <<<<<<< HEAD
 <<<<<<< HEAD
 - Trang giá và tài liệu licensing: proxmox.com, Broadcom/VMware (xem nguồn và ngày tra trong `docs/06-evaluation/tco.md`)
-=======
-- Trang giá và tài liệu licensing: proxmox.com, Broadcom/VMware (xem nguồn và ngày tra trong `docs/06-evaluation/tco.md`).
-=======
-- Trang giá và tài liệu licensing: proxmox.com, Broadcom/VMware (xem nguồn và ngày tra trong `docs/06-evaluation/tco.md`).
