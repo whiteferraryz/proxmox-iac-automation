@@ -4,7 +4,6 @@
 
 - Người thực hiện:Nguyễn Vĩnh Thắng
 - Thời gian: 4 tuần (24 ngày làm việc)
-=======
 - Phiên bản lab: Proxmox VE 9.2.2 (Debian 13)
 
 > Lab chạy trên máy cá nhân (khoảng 6GB RAM, 100GB ổ đĩa) bằng VMware Workstation. Số liệu hiệu năng trên nested chỉ có giá trị **so sánh tương đối**, không đại diện phần cứng thật.
