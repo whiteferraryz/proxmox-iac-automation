@@ -146,6 +146,4 @@ Không commit: token Proxmox, `*.env`, khoá SSH, `terraform.tfstate`, `pve.yml`
 - Tài liệu Proxmox VE, Proxmox Backup Server (pve.proxmox.com, pbs.proxmox.com)
 - Provider Terraform `bpg/proxmox` (registry.terraform.io/providers/bpg/proxmox)
 - Tài liệu Ansible, GitLab CI/CD và Terraform state do GitLab quản lý
-<<<<<<< HEAD
-<<<<<<< HEAD
 - Trang giá và tài liệu licensing: proxmox.com, Broadcom/VMware (xem nguồn và ngày tra trong `docs/06-evaluation/tco.md`)
