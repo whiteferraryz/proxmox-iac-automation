@@ -75,6 +75,7 @@ apply:
 
 configure:
   stage: configure
+  extends: .terraform
   needs: [apply]
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
