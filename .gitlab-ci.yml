@@ -75,10 +75,12 @@ apply:
 
 configure:
   stage: configure
-  extends: .terraform
   needs: [apply]
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  variables:
+    ANSIBLE_HOST_KEY_CHECKING: "False"
+    ANSIBLE_PRIVATE_KEY_FILE: "/home/gitlab-runner/.ssh/lab__ed25519"
   script:
     - cd infra/ansible
     - ./scripts/gen-inventory.sh
