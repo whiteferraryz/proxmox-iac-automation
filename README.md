@@ -74,12 +74,12 @@ Mục tiêu của dự án là xây dựng và chuyển đổi hạ tầng từ 
 ```bash
 cat > ~/.config/proxmox.env <<'ENV'
 export PROXMOX_VE_ENDPOINT="https://192.168.42.11:8006/"
-export PROXMOX_VE_API_TOKEN="terraform@pve!tf=<secret>"
+export PROXMOX_VE_API_TOKEN="terraform@pve!tf2=<secret>"
 export PROXMOX_VE_INSECURE="true"      # cert tự ký trong lab
 ENV
 chmod 600 ~/.config/proxmox.env && source ~/.config/proxmox.env
 
-cd terraform
+cd infra/terraform
 terraform fmt -recursive
 ```
 
@@ -97,7 +97,7 @@ terraform output vm_ips
 ### 4.3 Ansible
 
 ```bash
-cd ansible
+cd infra/ansible
 ./scripts/gen-inventory.sh                 # sinh inventory từ output Terraform
 ansible all -m ping
 ansible-playbook site.yml                  # lần 2 phải cho changed=0 (idempotent)
